@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CyberCatch</title>
+
   <style>
     body {
       font-family: 'Jungle Adventurer', Arial, sans-serif !important;
@@ -13,30 +14,56 @@
       color: black;
       overflow: hidden;
       padding-top: 20px;
+      margin: 0;
     }
+
     .game-container {
       position: relative;
       width: 450px;
       height: 400px;
       margin: 40px auto 20px;
     }
+
     .player {
       width: 80px;
       height: 80px;
       background-color: #808080;
       border-radius: 50%;
       position: absolute;
+
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
+
       font-weight: bold;
       color: white;
       cursor: pointer;
+
       border: 3px solid transparent;
+      box-sizing: border-box;
     }
+
     .player.has-ball {
       border-color: #2ecc71;
     }
+
+    /* Participant avatar */
+
+    #player0 .avatar-icon {
+      font-size: 34px;
+      line-height: 34px;
+    }
+
+    #player0 .player-name {
+      font-size: 12px;
+      margin-top: 3px;
+      max-width: 70px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
     .ball {
       width: 20px;
       height: 20px;
@@ -46,7 +73,9 @@
       transition: left 0.6s ease-in-out, top 0.6s ease-in-out;
       z-index: 5;
     }
-    #nickname-screen, #waiting-screen {
+
+    #loading-screen,
+    #waiting-screen {
       display: flex;
       position: absolute;
       width: 100%;
@@ -59,12 +88,17 @@
       flex-direction: column;
       z-index: 10;
     }
-    #nickname-screen input {
-      margin-top: 10px;
-      padding: 8px;
-      font-size: 16px;
+
+    #waiting-screen {
+      display: none;
     }
-    #nickname-screen button, #end-early-btn {
+
+    #waiting-screen img {
+      width: 100px;
+      margin-top: 20px;
+    }
+
+    #end-early-btn {
       font-family: 'Jungle Adventurer', Arial, sans-serif !important;
       margin-top: 15px;
       padding: 10px 20px;
@@ -74,208 +108,875 @@
       color: white;
       border: none;
       border-radius: 5px;
-    }
-    #nickname-screen button {
-      background-color: #2ecc71;
-    }
-    #waiting-screen img {
-      width: 100px;
-      margin-top: 20px;
-    }
-    #end-early-btn {
       display: none;
     }
   </style>
 </head>
+
+
 <body>
 
-<div id="nickname-screen">
-  <h2>Please enter your nickname:</h2>
-  <input type="text" id="nickname-input" placeholder="Your name..." />
-  <button onclick="startWaiting()">Start</button>
+
+<!-- Loading participant data -->
+
+<div id="loading-screen">
+  <h2>Loading...</h2>
 </div>
 
-<div id="waiting-screen" style="display:none;">
+
+<!-- Waiting screen -->
+
+<div id="waiting-screen">
   <h2>Waiting for other players to log in...</h2>
-  <img src="https://icon-library.com/images/waiting-icon-gif/waiting-icon-gif-1.jpg" alt="Waiting..." />
+
+  <img
+    src="https://icon-library.com/images/waiting-icon-gif/waiting-icon-gif-1.jpg"
+    alt="Waiting..."
+  />
 </div>
+
+
+<!-- Game -->
 
 <div id="game-screen" style="display:none;">
+
   <h1>CyberCatch</h1>
-  <p id="instruction-text">Click on a player to pass the ball when it's your turn.</p>
+
+  <p id="instruction-text">
+    Click on a player to pass the ball when it's your turn.
+  </p>
+
+
   <div class="game-container" id="game-container">
-    <div class="player has-ball" id="playerA" style="left: 20px; top: 120px;">Alex</div>
-    <div class="player" id="playerB" style="left: 120px; top: 20px;">Taylor</div>
-    <div class="player" id="playerC" style="left: 250px; top: 20px;">Casey</div>
-    <div class="player" id="playerD" style="left: 350px; top: 120px;">Jordan</div>
-    <div class="player" id="playerE" style="left: 100px; top: 280px;">Morgan</div>
-    <div class="player" id="player0" style="left: 270px; top: 280px;">You</div>
+
+    <div
+      class="player has-ball"
+      id="playerA"
+      style="left:20px; top:120px;">
+      Alex
+    </div>
+
+
+    <div
+      class="player"
+      id="playerB"
+      style="left:120px; top:20px;">
+      Taylor
+    </div>
+
+
+    <div
+      class="player"
+      id="playerC"
+      style="left:250px; top:20px;">
+      Casey
+    </div>
+
+
+    <div
+      class="player"
+      id="playerD"
+      style="left:350px; top:120px;">
+      Jordan
+    </div>
+
+
+    <div
+      class="player"
+      id="playerE"
+      style="left:100px; top:280px;">
+      Morgan
+    </div>
+
+
+    <!-- PARTICIPANT -->
+
+    <div
+      class="player"
+      id="player0"
+      style="left:270px; top:280px;">
+
+      <div
+        class="avatar-icon"
+        id="participant-avatar-icon">
+        🐶
+      </div>
+
+      <div
+        class="player-name"
+        id="participant-avatar-name">
+        You
+      </div>
+
+    </div>
+
+
     <div class="ball" id="ball"></div>
+
   </div>
-  <div class="info" id="info">The game is starting...</div>
-  <button id="end-early-btn" onclick="endGame()">End Game</button>
+
+
+  <div class="info" id="info">
+    The game is starting...
+  </div>
+
+
+  <button
+    id="end-early-btn"
+    onclick="endGame()">
+    End Game
+  </button>
+
 </div>
 
-<script>
-let nickname = "You";
-const aiPlayers = ["playerA", "playerB", "playerC", "playerD", "playerE"];
-let currentPlayer = "playerA";
-let totalThrows = 0;
-let gameEnded = false;
-let gameLog = [];
-let lastPlayerReceiveTime = null;
 
-const phase2Rates = {
-  playerA: 0.75, // Confirmed Positive
-  playerB: 0.25, // Disconfirmed Positive
-  playerC: 0.75, // Disconfirmed Negative
-  playerD: 0.25, // Confirmed Negative
-  playerE: 0.50  // Uncertainty Anchor
+
+<script>
+
+/* =========================================================
+   PARTICIPANT DATA FROM QUALTRICS
+   ========================================================= */
+
+let nickname = "You";
+let participantIcon = "DOG";
+let participantColor = "GREEN";
+
+let participantDataReceived = false;
+let gameStarted = false;
+
+
+/* Maps Qualtrics values to visible avatars */
+
+const iconMap = {
+  DOG: "🐶",
+  CAT: "🐱",
+  OWL: "🦉"
 };
 
-let remainingHopsBeforeReturn = 0; // Tracks maximum allowable non-returns before returning to participant
+
+const colorMap = {
+  RED: "#e74c3c",
+  GREEN: "#2ecc71",
+  PINK: "#ff69b4"
+};
+
+
+
+/* =========================================================
+   RECEIVE EMBEDDED DATA FROM QUALTRICS
+   ========================================================= */
+
+window.addEventListener("message", function(event) {
+
+  if (!event.data || typeof event.data !== "object") {
+    return;
+  }
+
+
+  if (event.data.type === "CyberCatchParticipantData") {
+
+    console.log(
+      "CyberCatch received participant data:",
+      event.data
+    );
+
+
+    /* NAME */
+
+    if (event.data.participant_name) {
+      nickname = String(event.data.participant_name);
+    }
+
+
+    /* ICON */
+
+    if (event.data.participant_icon) {
+      participantIcon =
+        String(event.data.participant_icon).trim().toUpperCase();
+    }
+
+
+    /* COLOR */
+
+    if (event.data.participant_color) {
+      participantColor =
+        String(event.data.participant_color).trim().toUpperCase();
+    }
+
+
+    applyParticipantAvatar();
+
+
+    participantDataReceived = true;
+
+
+    /* Start only once */
+
+    if (!gameStarted) {
+      startWaiting();
+    }
+  }
+
+});
+
+
+
+/* =========================================================
+   APPLY PARTICIPANT AVATAR
+   ========================================================= */
+
+function applyParticipantAvatar() {
+
+  const participant =
+    document.getElementById("player0");
+
+  const icon =
+    document.getElementById("participant-avatar-icon");
+
+  const name =
+    document.getElementById("participant-avatar-name");
+
+
+  /* NAME */
+
+  name.innerText = nickname;
+
+
+  /* ICON */
+
+  icon.innerText =
+    iconMap[participantIcon] || "🐶";
+
+
+  /* COLOR */
+
+  participant.style.backgroundColor =
+    colorMap[participantColor] || "#2ecc71";
+
+
+  console.log("Participant avatar:", {
+    name: nickname,
+    icon: participantIcon,
+    color: participantColor
+  });
+}
+
+
+
+/* =========================================================
+   TELL QUALTRICS THAT THE HTML IS READY
+   ========================================================= */
+
+function tellQualtricsReady() {
+
+  window.parent.postMessage(
+    {
+      type: "CyberCatchReady"
+    },
+    "*"
+  );
+}
+
+
+window.addEventListener("DOMContentLoaded", function() {
+
+  tellQualtricsReady();
+
+});
+
+
+
+/* =========================================================
+   GAME VARIABLES
+   ========================================================= */
+
+const aiPlayers = [
+  "playerA",
+  "playerB",
+  "playerC",
+  "playerD",
+  "playerE"
+];
+
+
+let currentPlayer = "playerA";
+
+let totalThrows = 0;
+
+let gameEnded = false;
+
+let gameLog = [];
+
+let lastPlayerReceiveTime = null;
+
+
+
+const phase2Rates = {
+
+  playerA: 0.75, // Confirmed Positive
+
+  playerB: 0.25, // Disconfirmed Positive
+
+  playerC: 0.75, // Disconfirmed Negative
+
+  playerD: 0.25, // Confirmed Negative
+
+  playerE: 0.50  // Uncertainty Anchor
+
+};
+
+
+let remainingHopsBeforeReturn = 0;
+
+
+
+/* =========================================================
+   WAITING
+   ========================================================= */
 
 function startWaiting() {
-  nickname = document.getElementById("nickname-input").value || "You";
-  document.getElementById("player0").innerText = nickname;
-  document.getElementById("nickname-screen").style.display = "none";
-  document.getElementById("waiting-screen").style.display = "flex";
+
+  if (gameStarted) {
+    return;
+  }
+
+  gameStarted = true;
+
+
+  document.getElementById("loading-screen")
+    .style.display = "none";
+
+
+  document.getElementById("waiting-screen")
+    .style.display = "flex";
+
+
   setTimeout(startGame, 4000);
 }
 
+
+
+/* =========================================================
+   START GAME
+   ========================================================= */
+
 function startGame() {
-  document.getElementById("waiting-screen").style.display = "none";
-  document.getElementById("game-screen").style.display = "block";
+
+  document.getElementById("waiting-screen")
+    .style.display = "none";
+
+
+  document.getElementById("game-screen")
+    .style.display = "block";
+
+
   moveBall(currentPlayer);
-  
-  document.querySelectorAll(".player").forEach(player => {
-    player.addEventListener("click", function () {
-      if (gameEnded || currentPlayer !== "player0" || this.id === "player0") return;
-      processThrow("player0", this.id, "Player");
+
+
+  document
+    .querySelectorAll(".player")
+    .forEach(player => {
+
+      player.addEventListener(
+        "click",
+        function() {
+
+          if (
+            gameEnded ||
+            currentPlayer !== "player0" ||
+            this.id === "player0"
+          ) {
+            return;
+          }
+
+
+          processThrow(
+            "player0",
+            this.id,
+            "Player"
+          );
+        }
+      );
+
     });
-  });
-  
-  setTimeout(() => { aiTurn(); }, getRandomDelay());
+
+
+  setTimeout(
+    () => {
+      aiTurn();
+    },
+    getRandomDelay()
+  );
 }
+
+
+
+/* =========================================================
+   PROCESS THROW
+   ========================================================= */
 
 function processThrow(fromId, toId, type) {
-  if (gameEnded) return;
-  
+
+  if (gameEnded) {
+    return;
+  }
+
+
   totalThrows++;
+
   updateBallHolder(toId);
 
-  const phase = totalThrows <= 30 ? "Phase1" : "Phase2";
+
+  const phase =
+    totalThrows <= 30
+      ? "Phase1"
+      : "Phase2";
+
+
+
+  /* PARTICIPANT THROW */
 
   if (type === "Player") {
-    const rt = lastPlayerReceiveTime ? Date.now() - lastPlayerReceiveTime : null;
+
+    const rt =
+      lastPlayerReceiveTime
+        ? Date.now() - lastPlayerReceiveTime
+        : null;
+
+
     lastPlayerReceiveTime = null;
-    gameLog.push({ throwNum: totalThrows, phase, from: nickname, to: document.getElementById(toId).innerText, targetId: toId, type, rt, timestamp: Date.now() });
-    
+
+
+    gameLog.push({
+
+      throwNum: totalThrows,
+
+      phase: phase,
+
+      from: nickname,
+
+      to:
+        document
+          .getElementById(toId)
+          .innerText,
+
+      targetId: toId,
+
+      type: type,
+
+      rt: rt,
+
+      timestamp: Date.now()
+
+    });
+
+
+
+    /* Phase 2 contingencies */
+
     if (phase === "Phase2") {
-      const returnProb = phase2Rates[toId];
+
+      const returnProb =
+        phase2Rates[toId];
+
+
       if (Math.random() < returnProb) {
-        remainingHopsBeforeReturn = 0; // Immediate return
+
+        remainingHopsBeforeReturn = 0;
+
       } else {
-        remainingHopsBeforeReturn = 2; // Allow up to 2 hops between AI players before forcing return to participant
+
+        remainingHopsBeforeReturn = 2;
+
       }
     }
-  } else {
-    gameLog.push({ throwNum: totalThrows, phase, from: document.getElementById(fromId).innerText, to: document.getElementById(toId).innerText, targetId: toId, type, timestamp: Date.now() });
+
   }
 
-  document.getElementById("info").innerText =
-    toId === "player0"
-      ? document.getElementById(fromId).innerText + " passed the ball to you – it's your turn!"
-      : document.getElementById(fromId).innerText + " passed the ball to " + document.getElementById(toId).innerText;
 
-  if (totalThrows >= 60 && !gameEnded) {
-    document.getElementById("end-early-btn").style.display = "inline-block";
+
+  /* AI THROW */
+
+  else {
+
+    gameLog.push({
+
+      throwNum: totalThrows,
+
+      phase: phase,
+
+      from:
+        document
+          .getElementById(fromId)
+          .innerText,
+
+      to:
+        toId === "player0"
+          ? nickname
+          : document
+              .getElementById(toId)
+              .innerText,
+
+      targetId: toId,
+
+      type: type,
+
+      timestamp: Date.now()
+
+    });
+
   }
+
+
+
+  /* INFO TEXT */
+
+  document
+    .getElementById("info")
+    .innerText =
+
+      toId === "player0"
+
+        ? document
+            .getElementById(fromId)
+            .innerText
+          + " passed the ball to you – it's your turn!"
+
+        : document
+            .getElementById(fromId)
+            .innerText
+          + " passed the ball to "
+          + document
+              .getElementById(toId)
+              .innerText;
+
+
+
+  if (
+    totalThrows >= 60 &&
+    !gameEnded
+  ) {
+
+    document
+      .getElementById("end-early-btn")
+      .style.display = "inline-block";
+
+  }
+
+
 
   if (totalThrows >= 150) {
+
     endGame();
+
     return;
   }
+
+
 
   if (toId !== "player0") {
-    setTimeout(() => { aiTurn(); }, getRandomDelay());
+
+    setTimeout(
+      () => {
+        aiTurn();
+      },
+      getRandomDelay()
+    );
+
   }
 }
+
+
+
+/* =========================================================
+   UPDATE BALL HOLDER
+   ========================================================= */
 
 function updateBallHolder(newHolder) {
-  const target = document.getElementById(newHolder);
-  document.querySelectorAll(".player").forEach(p => p.classList.remove("has-ball"));
+
+  const target =
+    document.getElementById(newHolder);
+
+
+  document
+    .querySelectorAll(".player")
+    .forEach(
+      p => p.classList.remove("has-ball")
+    );
+
+
   target.classList.add("has-ball");
+
+
   moveBall(newHolder);
+
+
   currentPlayer = newHolder;
 
+
   if (newHolder === "player0") {
-    lastPlayerReceiveTime = Date.now();
+
+    lastPlayerReceiveTime =
+      Date.now();
+
   }
 }
+
+
+
+/* =========================================================
+   MOVE BALL
+   ========================================================= */
 
 function moveBall(targetId) {
-  const ball = document.getElementById("ball");
-  const target = document.getElementById(targetId);
-  const container = document.getElementById("game-container");
-  const tRect = target.getBoundingClientRect();
-  const cRect = container.getBoundingClientRect();
-  const x = tRect.left - cRect.left + target.offsetWidth/2 - ball.offsetWidth/2;
-  const y = tRect.top - cRect.top + target.offsetHeight/2 - ball.offsetHeight/2;
-  ball.style.left = `${x}px`;
-  ball.style.top = `${y}px`;
+
+  const ball =
+    document.getElementById("ball");
+
+
+  const target =
+    document.getElementById(targetId);
+
+
+  const container =
+    document.getElementById("game-container");
+
+
+  const tRect =
+    target.getBoundingClientRect();
+
+
+  const cRect =
+    container.getBoundingClientRect();
+
+
+  const x =
+    tRect.left -
+    cRect.left +
+    target.offsetWidth / 2 -
+    ball.offsetWidth / 2;
+
+
+  const y =
+    tRect.top -
+    cRect.top +
+    target.offsetHeight / 2 -
+    ball.offsetHeight / 2;
+
+
+  ball.style.left =
+    `${x}px`;
+
+
+  ball.style.top =
+    `${y}px`;
 }
+
+
+
+/* =========================================================
+   RANDOM AI DELAY
+   ========================================================= */
 
 function getRandomDelay() {
-  return Math.floor(Math.random() * 800) + 1200;
+
+  return (
+    Math.floor(
+      Math.random() * 800
+    ) + 1200
+  );
 }
 
+
+
+/* =========================================================
+   AI TURN
+   ========================================================= */
+
 function aiTurn() {
-  if (totalThrows >= 150 || gameEnded) {
+
+  if (
+    totalThrows >= 150 ||
+    gameEnded
+  ) {
+
     endGame();
+
     return;
   }
+
 
   let next;
 
+
+
+  /* PHASE 1 */
+
   if (totalThrows <= 30) {
+
     if (Math.random() < 0.5) {
+
       next = "player0";
+
     } else {
-      const remaining = aiPlayers.filter(p => p !== currentPlayer);
-      next = remaining[Math.floor(Math.random() * remaining.length)];
+
+      const remaining =
+        aiPlayers.filter(
+          p => p !== currentPlayer
+        );
+
+
+      next =
+        remaining[
+          Math.floor(
+            Math.random() *
+            remaining.length
+          )
+        ];
+
     }
-  } else {
-    if (remainingHopsBeforeReturn === 0) {
-      next = "player0";
-    } else {
-      // Decrement allowable hops
-      remainingHopsBeforeReturn--;
-      const otherAIs = aiPlayers.filter(p => p !== currentPlayer);
-      next = otherAIs[Math.floor(Math.random() * otherAIs.length)];
-    }
+
   }
 
-  processThrow(currentPlayer, next, "AI");
+
+
+  /* PHASE 2 */
+
+  else {
+
+    if (
+      remainingHopsBeforeReturn === 0
+    ) {
+
+      next = "player0";
+
+    }
+
+    else {
+
+      remainingHopsBeforeReturn--;
+
+
+      const otherAIs =
+        aiPlayers.filter(
+          p => p !== currentPlayer
+        );
+
+
+      next =
+        otherAIs[
+          Math.floor(
+            Math.random() *
+            otherAIs.length
+          )
+        ];
+
+    }
+
+  }
+
+
+
+  processThrow(
+    currentPlayer,
+    next,
+    "AI"
+  );
 }
+
+
+
+/* =========================================================
+   END GAME
+   ========================================================= */
 
 function endGame() {
-  if (gameEnded) return;
-  gameEnded = true;
 
-  const gameLogString = JSON.stringify(gameLog);
-  
-  if (window.Qualtrics && Qualtrics.SurveyEngine) {
-    Qualtrics.SurveyEngine.setEmbeddedData('CyberCatchLog', gameLogString);
-  } else {
-    window.parent.postMessage({ type: "CyberCatchLog", gameLog: gameLogString }, "*");
+  if (gameEnded) {
+    return;
   }
 
+
+  gameEnded = true;
+
+
+  const gameLogString =
+    JSON.stringify(gameLog);
+
+
+
+  /* If CyberCatch is running directly inside Qualtrics */
+
+  if (
+    window.Qualtrics &&
+    Qualtrics.SurveyEngine
+  ) {
+
+    Qualtrics.SurveyEngine
+      .setEmbeddedData(
+        "CyberCatchLog",
+        gameLogString
+      );
+
+  }
+
+
+
+  /* Normal GitHub iframe → Qualtrics */
+
+  else {
+
+    window.parent.postMessage(
+      {
+
+        type: "CyberCatchLog",
+
+        gameLog: gameLogString,
+
+        participant_name: nickname,
+
+        participant_icon: participantIcon,
+
+        participant_color: participantColor
+
+      },
+      "*"
+    );
+
+  }
+
+
+
   document.body.innerHTML = `
-    <div style="background-color: #d3d3d3; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-      <div style="font-size: 24px; font-weight: bold; color: #2c3e50;">The task has ended. Thank you!</div>
-    </div>`;
+
+    <div
+      style="
+        background-color:#d3d3d3;
+        width:100vw;
+        height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        flex-direction:column;
+      "
+    >
+
+      <div
+        style="
+          font-size:24px;
+          font-weight:bold;
+          color:#2c3e50;
+        "
+      >
+        The task has ended. Thank you!
+      </div>
+
+    </div>
+
+  `;
 }
+
 </script>
+
 </body>
 </html>

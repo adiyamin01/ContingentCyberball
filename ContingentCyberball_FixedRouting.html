@@ -64,6 +64,17 @@
       text-overflow: ellipsis;
     }
 
+    .ai-avatar-icon {
+    font-size: 34px;
+    line-height: 34px;
+    }
+
+.ai-player-name {
+    font-size: 12px;
+    margin-top: 3px;
+    color: white;
+    }
+    
     .ball {
       width: 20px;
       height: 20px;
@@ -149,44 +160,65 @@
 
   <div class="game-container" id="game-container">
 
-    <div
-      class="player has-ball"
-      id="playerA"
-      style="left:20px; top:120px;">
-      Alex
+    <!-- AI participants -->
+<div
+    class="player has-ball"
+    id="playerA"
+    data-player-name="Alex"
+    style="left:20px; top:120px; background-color:#AF7AC5;">
+
+    <div class="ai-avatar-icon">🐧</div>
+    <div class="ai-player-name">Alex</div>
+</div>
+
+
+<div
+    class="player"
+    id="playerB"
+    data-player-name="Taylor"
+    style="left:120px; top:20px; background-color:#F5B041;">
+
+    <div class="ai-avatar-icon">🐰</div>
+    <div class="ai-player-name">Taylor</div>
+</div>
+
+
+<div
+    class="player"
+    id="playerC"
+    data-player-name="Casey"
+    style="left:250px; top:20px; background-color:#5DADE2;">
+
+    <div class="ai-avatar-icon">🦊</div>
+    <div class="ai-player-name">Casey</div>
+</div>
+
+
+<div
+    class="player"
+    id="playerD"
+    data-player-name="Jordan"
+    style="left:350px; top:120px; background-color:#F4D03F;">
+
+    <div class="ai-avatar-icon">🐸</div>
+    <div class="ai-player-name">Jordan</div>
+</div>
+
+
+<div
+    class="player error-avatar"
+    id="playerE"
+    data-player-name="Morgan"
+    style="left:100px; top:280px; background-color:#D9D9D9;">
+
+    <div style="font-size:34px; color:#666;">
+        ⛌
     </div>
 
-
-    <div
-      class="player"
-      id="playerB"
-      style="left:120px; top:20px;">
-      Taylor
+    <div class="ai-player-name" style="color:#666;">
+        Morgan
     </div>
-
-
-    <div
-      class="player"
-      id="playerC"
-      style="left:250px; top:20px;">
-      Casey
-    </div>
-
-
-    <div
-      class="player"
-      id="playerD"
-      style="left:350px; top:120px;">
-      Jordan
-    </div>
-
-
-    <div
-      class="player"
-      id="playerE"
-      style="left:100px; top:280px;">
-      Morgan
-    </div>
+</div>
 
 
     <!-- PARTICIPANT -->
